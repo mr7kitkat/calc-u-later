@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Chivo:wght@100..900&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
 * {
   padding: 0;
   margin: 0;
@@ -13,6 +13,8 @@
   --color-gray-lv1-font-t2: #464646;
   --color-gray-lv2-font-t2: #787878;
   --default-px: 16px;
+  --font-1: "Chivo", sans-serif;
+  --font-2: "Sora", sans-serif;
 }
 
 body {
@@ -23,7 +25,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Chivo", sans-serif;
+  font-family: var(--font-1);
   font-optical-sizing: auto;
   font-style: normal;
 }
@@ -80,10 +82,12 @@ body {
   font-weight: 900;
   text-align: right;
   line-height: 1;
+  margin-bottom: var(--default-px);
 }
 
 /* Input section style */
 .input {
+  margin-top: var(--default-px);
   display: grid;
   grid-template-columns: auto auto;
   gap: 8px;
@@ -92,10 +96,20 @@ body {
 button {
   all: unset;
   color: var(--color-gray-lv2-font-t2);
-  border: 1px solid white;
   text-align: center;
-  font-size: 20px;
+  font-size: 28px;
   border-radius: 8px;
+  font-weight: 600;
+  font-family: var(--font-2);
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+button img {
+  filter: invert(50%);
+  height: auto;
+  width: 20px;
+  margin: 0 auto;
 }
 
 .scientic-group {
@@ -112,6 +126,17 @@ button {
   gap: 8px;
 }
 
+.number,
+#dot {
+  font-size: 44px;
+  color: var(--color-white-font-t2);
+}
+
+#deletebtn,
+#equalbtn {
+  color: var(--color-white-font-t2);
+}
+
 #equalbtn {
   grid-column: 5 / 6;
   grid-row: 3 /5;
@@ -119,6 +144,3 @@ button {
 }
 
 /* Test zone */
-.b1 {
-  border: 1px solid white;
-}
