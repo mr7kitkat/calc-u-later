@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Chivo:wght@100..900&display=swap");
+
 * {
   padding: 0;
   margin: 0;
@@ -10,8 +12,113 @@
   --color-tomato-red-component-t2: #ff523d;
   --color-gray-lv1-font-t2: #464646;
   --color-gray-lv2-font-t2: #787878;
+  --default-px: 16px;
 }
 
 body {
   background: var(--color-black-body-bg-t1);
+  height: 100vh;
+  width: 100vw;
+  padding: var(--default-px * 2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Chivo", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.main-app-background {
+  background-color: var(--color-black-bg-t2);
+  max-width: 900px;
+  height: 100%;
+  width: 100%;
+  border-radius: var(--default-px);
+
+  display: grid;
+  grid-template-rows: 50px auto 5fr;
+}
+
+/* App title bar section */
+.app-title {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: var(--default-px);
+}
+
+.dot {
+  display: inline-block;
+  --dimension: var(--default-px);
+  width: var(--dimension);
+  height: var(--dimension);
+  background-color: var(--color-white-font-t2);
+  border-radius: 50%;
+}
+
+.app-title h1 {
+  color: var(--color-white-font-t2);
+  margin-left: var(--default-px);
+}
+
+/* Output styling */
+.output,
+.input {
+  padding: 8px 32px;
+}
+
+.expression {
+  color: var(--color-gray-lv1-font-t2);
+  font-size: 32px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.result {
+  color: var(--color-white-font-t2);
+  font-size: 80px;
+  font-weight: 900;
+  text-align: right;
+  line-height: 1;
+}
+
+/* Input section style */
+.input {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 8px;
+}
+
+button {
+  all: unset;
+  color: var(--color-gray-lv2-font-t2);
+  border: 1px solid white;
+  text-align: center;
+  font-size: 20px;
+  border-radius: 8px;
+}
+
+.scientic-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.non-scientific-group {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 8px;
+}
+
+#equalbtn {
+  grid-column: 5 / 6;
+  grid-row: 3 /5;
+  background-color: var(--color-tomato-red-component-t2);
+}
+
+/* Test zone */
+.b1 {
+  border: 1px solid white;
 }

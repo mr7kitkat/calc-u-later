@@ -11,7 +11,7 @@
   </head>
   <body>
     <section class="main-app-background">
-      <section class="app-title">
+      <section class="app-title b1">
         <div class="circles">
           <div class="dot"></div>
           <div class="dot"></div>
@@ -19,45 +19,54 @@
         </div>
         <h1>Calculator</h1>
       </section>
-      <section class="output">
-        <div class="expression"></div>
-        <div class="result"></div>
+      <section class="output b1">
+        <div class="expression">7x140</div>
+        <div class="result">980</div>
       </section>
-      <section class="input">
+      <section class="input b1">
         <!-- scientific button -->
-        <button class="scientific function">sin</button>
-        <button class="scientific function">1n</button>
-        <button class="scientific function">cos</button>
-        <button class="scientific function">tan</button>
-        <button class="scientific function">log</button>
-        <button class="scientific val">e</button>
-        <button class="scientific val">pi</button>
-        <button class="scientific operator">^</button>
-        <button class="scientific">!</button>
-        <button class="scientific function">sqroot</button>
+        <div class="scientic-group">
+          <button class="scientific function col1">sin</button>
+          <button class="scientific function col2">ln</button>
+          <button class="scientific function col1">cos</button>
+          <button class="scientific function col2">log</button>
+          <button class="scientific function col1">tan</button>
+          <button class="scientific val col2">e</button>
+          <button class="scientific val col1">pi</button>
+          <button class="scientific operator col2">^</button>
+          <button class="scientific col1">!</button>
+          <button class="scientific function col2">sqroot</button>
+        </div>
 
         <!-- numeric button -->
-        <button class="number">0</button>
-        <button class="number">1</button>
-        <button class="number">2</button>
-        <button class="number">3</button>
-        <button class="number">4</button>
-        <button class="number">5</button>
-        <button class="number">6</button>
-        <button class="number">7</button>
-        <button class="number">8</button>
-        <button class="number">9</button>
-        <button class="val">.</button>
-        <button class="processbtn">DEL</button>
+        <div class="non-scientific-group">
+          <!-- row1 -->
+          <button class="number">7</button>
+          <button class="number">8</button>
+          <button class="number">9</button>
+          <button class="operator">Divide</button>
+          <button class="operator">(</button>
 
-        <!-- operators -->
-        <button class="operator">Divide</button>
-        <button class="operator">Multiply</button>
-        <button class="operator">Plus</button>
-        <button class="operator">Minus</button>
-        <button class="operator">(</button>
-        <button class="operator">)</button>
-        <button class="processbtn">=</button>
+          <!-- row2 -->
+          <button class="number">4</button>
+          <button class="number">5</button>
+          <button class="number">6</button>
+          <button class="operator">Multiply</button>
+          <button class="operator">)</button>
+
+          <!-- row 3 -->
+          <button class="number">1</button>
+          <button class="number">2</button>
+          <button class="number">3</button>
+          <button class="operator">Minus</button>
+          <button class="processbtn" id="equalbtn">=</button>
+
+          <!-- row 4 -->
+          <button class="number">0</button>
+          <button class="val">.</button>
+          <button class="processbtn">DEL</button>
+          <button class="operator">Plus</button>
+        </div>
       </section>
     </section>
   </body>
