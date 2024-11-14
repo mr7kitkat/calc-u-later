@@ -2,4 +2,16 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  --color-black-body-bg-t1: #181818;
+  --color-golden-section-bg-font-t1: #c9a03e;
+  --color-gray-lv1-font-t1: #929292;
+  --color-black-bg-t2: #000000;
+  --color-white-font-t2: #fcfcfc;
+  --color-tomato-red-component-t2: #ff523d;
+  --color-gray-lv1-font-t2: #464646;
+  --color-gray-lv2-font-t2: #787878;
+}
+
+body {
+  background: var(--color-black-body-bg-t1);
 }
