@@ -1,30 +1,6 @@
-Calculator 0 se start hoga
+if I would be a computer 
 
-Ye user ke input ka wait karega
-    jab user input dega to us time ye kewal valid inputs hi accept karega 
-    otherwise invalid inputs ko accept hi nahi karega
 
- ok   * valid inputs => + - * / % ^ . 0 to 9 sin cos tan log 1/x e sqrt ( )   
- ok   *    ( => aap jitne chaho utni baar isko click kar sakte ho but ye ) ke balance ko update karta hai
-           ) => ye aap ( ke diye gaye balance ke hisaab se use kar sakte hai (using dataset.balance)
- ok   * Agar expression ki length 1 hai aur isme 0 maujud hai aur current input hamara koi number hai to wo 0 ko replace kar dega
-    * Agar expression ki length > 1 hai aur 
-        * agar last item + - x / hai and current input bhi inme se hi ek hai to current value last itme ko replace kar  
-            dega
-        * iska last item koi digit hai to next valid inputs hai
-            => + - * / % ^ . 0 to 9 
-            => )   => 'ye tab apply hoga jab iske pahle opening brackets ka use hua ho'
-            => sin cos tan log 1/x e sqrt (    =>   'inke use ke liye ek prefix symbol hona jaruri hai defaul is x'
-        * agar last item % hai to next valid input is => - + / x ) ^, inke alawa jo bhi hai uske liye default ka use hoga
-        * agar last item ^ hai to next valid input is => 0 to 9 and -, baki ke liye use default x
-         
+* I see the expression array length if it is zero then 1st valid input would be either 0-9, - or  (, sin, cos, tan, log, pi, sqrt, e
 
-        agar upar ke sare validations sahi rahe to fir hum expression array ko update karte chalenge
-   
-
-    
-
-user ke kiye gaye input ko validate karega
-    * 
-    agar input invalid hai to ye error dega ya same expression hi return karega.
-    agar input valid hai to fir ye use process karke result return karega.
+* If expression length is 1 and previous value 

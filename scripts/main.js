@@ -10,58 +10,88 @@ const closingBracket = document.querySelector("#closingBracket");
 
 // the calculator Object
 const calc = {
-    exp: [],
-    get lastItem() {
-        if (this.length) {
-            return this.exp.slice(-1);
-        }
-    },
-    get length() {
-        return this.exp.length;
-    },
-    add: function (item) {
-        const validationCheck = /\b(?:[0-9+\-×\/√π%^]|e|sin|cos|tan|log)\b/;
-        if (validationCheck.test(item)) {
-            const validations = {
-                // its for number 0 to 9
-                number: {
-                    prevChecks,
-                    afterChecks
-                },
-                // it is for the basic math basicOperator
-                // +-×/
-                basicOperator: {
-                    prevChecks,
-                    afterChecks
-                },
-                //validations for percentage %
-                percentage: {
-                    prevChecks,
-                    afterChecks
-                },
-                // sqrt
-                sqrt: {
-                    prevChecks,
-                    afterChecks
-                },
-                // square
-                square: {
-                    prevChecks,
-                    afterChecks
-                },
-                // scientific function
-                scientificFunctions: {
-                    prevChecks,
-                    afterChecks
-                }
-            };
-            this.exp.push(item);
-        }
-    },
-    get remove() {
-        this.exp.pop();
-    },
-    renderCalc: function (nodename) {
-        nodename.innerText = this.exp.join("");
+  exp: [],
+
+  // Get the last item of the exp array
+  get lastItem() {
+    if (this.length) {
+      return this.exp.slice(-1);
     }
+  },
+
+  // get the length of the array
+  get length() {
+    return this.exp.length;
+  },
+
+  // add items to the array
+  add: function (item) {
+    const validationCheck = /\b(?:[0-9.+\-×\/^√π%()]|e|sin|cos|tan|log)\b/;
+    if (validationCheck.test(item)) {
+      const validations = {
+        // its for number 0 to 9
+        number: {
+          prevChecks: /\b(?:[0-9.+\-×\/√^(])\b/,
+          afterChecks: /\b(?:[0-9.+\-×\/%^)])\b/,
+          withDefaultPrefix: /\b(?:[√π(]|e|sin|cos|tan|log)\b/,
+          defaultPrefix: "×",
+        },
+        // it is for the basic math basicOperator
+        // +-×/
+        basicOperator: {
+          prevChecks: /\b(?:[0-9.π%)]|e|sin|cos|tan|log)\b/,
+          afterChecks: /\b(?:[0-9√π(]|e|sin|cos|tan|log)\b/,
+          withDefaultPrefix,
+          defaultPrefix,
+        },
+        //validations for percentage %
+        percentage: {
+          prevChecks: /\b(?:[0-9π]|e)\b/,
+          afterChecks: /[+\-×\/^]/,
+          withDefaultPrefix: /\b(?:[0-9√π(]|e|sin|cos|tan|log)\b/,
+          defaultPrefix: "×",
+        },
+        // sqrt
+        sqrt: {
+          prevChecks: /[+\-×\/√^(]/,
+          afterChecks: /\b(?:[0-9√π(]|e|sin|cos|tan|log)\b/,
+          withDefaultPrefix,
+          defaultPrefix,
+        },
+        // square
+        square: {
+          prevChecks: /\b(?:[0-9.π%)]|e)\b/,
+          afterChecks: /\b(?:[0-9\-√π(]|e|sin|cos|tan|log)\b/,
+          withDefaultPrefix,
+          defaultPrefix,
+        },
+        // scientific function
+        scientificFunctions: {
+          prevChecks: /[+\-×\/√^(]/,
+          afterChecks: /[(]/,
+          withDefaultPrefix: /\b(?:[0-9√π(]|e|sin|cos|tan|log)\b/,
+          defaultPrefix: "(",
+        },
+        dot: {
+          prevChecks: /[0-9]/,
+          afterChecks: /[0-9+\-×\/^)]/,
+          withDefaultPrefix: /\b(?:[√π(]|e|sin|cos|tan|log)\b/,
+          defaultPrefix: "×",
+        },
+      };
+
+      if (this.length) {
+      }
+    }
+  },
+
+  // remove items from the array
+  get remove() {
+    this.exp.pop();
+  },
+
+  // render expression to the screen
+  renderCalc: function (nodename) {
+    nodename.innerText = this.exp.join("");
+  },
 };
