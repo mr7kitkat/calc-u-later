@@ -3,7 +3,7 @@ const outputPanel = document.querySelector(".output");
 const expressionScreen = document.querySelector(".expression");
 const resultScreen = document.querySelector(".result");
 const btns = document.querySelectorAll(".getvalue");
-const clearbtn = document.querySelector("#clearbtn");
+const deleteBtn = document.querySelector("#clearbtn");
 const allclearbtn = document.querySelector("#allclearbtn");
 const openingBracket = document.querySelector("#openingBracket");
 const closingBracket = document.querySelector("#closingBracket");
@@ -25,8 +25,9 @@ const calc = {
   },
 
   // remove items from the array
-  remove() {
+  remove(renderingNode) {
     this.exp.pop();
+    this.renderCalc(renderingNode);
   },
 
   // render expression to the screen
@@ -34,7 +35,7 @@ const calc = {
     nodename.innerText = this.exp.join("");
   },
 
-  add(currentItem) {
+  add(currentItem, renderingNode) {
     const validSymbols =
       /[0-9\1/\sin(\cos(\tan(\log(\π\√\e\(\)\/\×\+\-\^\%\.]/gi;
 
@@ -50,30 +51,6 @@ const calc = {
       }
       // if expression has more than 1 item
       else {
-        // Validation object contains validation for different types
-        const validations = {
-          numberAndDot: {
-            valid: /[0-9\)\/\×\+\-\^\%\.]/gi,
-            validWithPrefix: /[\1/\sin(\cos(\tan(\log(\π\√\e\(]/gi,
-            prefix: "×",
-          },
-          trigonomatoryAndOperatorsAndBracketsOn: {
-            valid: /[0-9\1/\sin(\cos(\tan(\log(\π\√\e\(\+\-]/gi,
-            validWithPrefix: /[\.]/gi,
-            prefix: "0",
-          },
-          exponentAndPi: {
-            valid: /[\)\/\×\+\-\^\%]/gi,
-            validWithPrefix: /[0-9\1/\sin(\cos(\tan(\log(\π\√\e]/gi,
-            prefix: "×",
-          },
-          percentage: {
-            valid: /[\/\×\+\-\^]/gi,
-            validWithPrefix: /[0-9\1/\sin(\cos(\tan(\log(\π\√\e\(\)]/gi,
-            prefix: "×",
-          },
-        };
-
         const { lastItem } = this;
 
         // if lastItem is a number or dot
@@ -85,27 +62,103 @@ const calc = {
           } else if (/[\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
             this.exp.push("×");
             this.exp.push(currentItem);
-          } else {
-            if (
-              /\./.test(lastItem) &&
-              /[0-9\)\/\×\+\-\^\%]/gi.test(currentItem)
-            ) {
+          } else if (/[0-9\+\-\/\×\%\^\.]/gi.test(currentItem)) {
+            if (!(currentItem == "." && lastItem == ".")) {
               this.exp.push(currentItem);
             }
           }
         }
-        // if 
+        // if last items are operator
+        else if (/[\+\-\/\×]/gi.test(lastItem)) {
+          if (currentItem == "1/") {
+            this.exp.push("(");
+            this.exp.push("1");
+            this.exp.push("/");
+          } else if (/[\+\-\/\×]/gi.test(currentItem)) {
+            this.remove();
+            this.exp.push(currentItem);
+          } else if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
+            this.exp.push(currentItem);
+          }
+        }
 
+        // if last items is (
+        else if (/\(/.test(lastItem)) {
+          if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(\+\-]/gi.test(currentItem)) {
+            if (currentItem == "1/") {
+              this.exp.push("1");
+              this.exp.push("/");
+            } else {
+              this.exp.push(currentItem);
+            }
+          }
+        }
+        // if last items are pi, exponent and )
+        else if (/[\π\e\)]/.test(lastItem)) {
+          if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
+            this.exp.push("×");
+            if (currentItem == "1/") {
+              this.exp.push("(");
+              this.exp.push("1");
+              this.exp.push("/");
+            } else {
+              this.exp.push(currentItem);
+            }
+          } else if (/[\)\/\×\+\-\^\%]/gi.test(currentItem)) {
+            this.exp.push(currentItem);
+          }
+        }
+        // if last item is sqrt
+        else if (/[\√\^]/gi.test(lastItem)) {
+          if (/[0-9\sin(\cos(\tan(\log(\π\√\e\+\-]/gi.test(currentItem)) {
+            this.exp.push("(");
+            if (currentItem == "1/") {
+              this.exp.push("1");
+              this.exp.push("/");
+            } else {
+              this.exp.push(currentItem);
+            }
+          } else if (/[\(]/gi.test(currentItem)) {
+            this.exp.push("(");
+          }
+        }
+        // /[\%]/gi;
+        // /[0-9\1/\sin(\cos(\tan(\log(\π\√\e\(\)\/\×\+\-\^\%\.]/gi
+        else if (/[\%]/gi.test(lastItem)) {
+          if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
+            this.exp.push("×");
+            if (currentItem == "1/") {
+              this.exp.push("(");
+              this.exp.push("1");
+              this.exp.push("/");
+            } else {
+              this.exp.push(currentItem);
+            }
+          } else if (/[\)\/\×\+\-]/gi.test(currentItem)) {
+            this.exp.push(currentItem);
+          }
+        }
         // end of the else block
       }
     }
+
+    // after adding the item render expression
+    this.renderCalc(renderingNode);
   },
 };
 
 btns.forEach((btn) => {
   btn.addEventListener("click", function (e) {
     const targetbtn = e.target.dataset.value;
-    calc.add(targetbtn);
-    calc.renderCalc(expressionScreen);
+    calc.add(targetbtn, expressionScreen);
   });
+});
+
+deleteBtn.addEventListener("click", function () {
+  calc.remove(expressionScreen);
+});
+
+allclearbtn.addEventListener("click", function () {
+  calc.exp = [];
+  calc.renderCalc(expressionScreen);
 });
