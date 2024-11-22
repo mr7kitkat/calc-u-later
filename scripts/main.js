@@ -25,77 +25,92 @@ const calc = {
   },
 
   // remove items from the array
-  remove(renderingNode) {
+  remove() {
     this.exp.pop();
-    this.renderCalc(renderingNode);
   },
 
-  // render expression to the screen
-  renderCalc(nodename) {
-    nodename.innerText = this.exp.join("");
-  },
+  add(currentItem) {
+    const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const trigonomatory = ["sin(", "cos(", "tan(", "log("];
+    const mathOperators = ["/", "+", "-", "×"];
+    const restSymbols = ["1/", "π", "e", "√", "(", ")", "^", "%", "."];
+    const validSymbols = [...numbers, ...trigonomatory, ...mathOperators, ...restSymbols,];
 
-  add(currentItem, renderingNode) {
-    const validSymbols =
-      /[0-9\1/\sin(\cos(\tan(\log(\π\√\e\(\)\/\×\+\-\^\%\.]/gi;
+    // if currentItem is allowed valid calculator symbol
+    if (validSymbols.includes(currentItem)) {
 
-    if (validSymbols.test(currentItem)) {
+
       // if expression has nothing in it
       if (this.length <= 0) {
-        if (currentItem == "1/") {
-          this.exp.push("1");
-          this.exp.push("/");
-        } else if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
-          this.exp.push(currentItem);
+
+        if ([...numbers, ...trigonomatory, "1/", "π", "e", "√", "("].includes(currentItem)) {
+          if (currentItem == "1/") {
+            this.exp.push("1");
+            this.exp.push("/");
+          } else {
+            this.exp.push(currentItem);
+          }
         }
       }
+
+
+
+
       // if expression has more than 1 item
       else {
+
+        // getting last item
         const { lastItem } = this;
 
         // if lastItem is a number or dot
-        if (/[0-9\.]/.test(lastItem)) {
+        if ([...numbers
+          , "."].includes(lastItem)) {
           if (currentItem == "1/") {
             this.exp.push("×");
             this.exp.push("1");
             this.exp.push("/");
-          } else if (/[\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
+          }
+          else if ([...trigonomatory, "π", "e", "√", "("].includes(currentItem)) {
             this.exp.push("×");
             this.exp.push(currentItem);
-          } else if (/[0-9\+\-\/\×\%\^\.]/gi.test(currentItem)) {
+          }
+          else if ([...numbers, "1/", ".", ...mathOperators, "%", "^"].includes(lastItem)) {
             if (!(currentItem == "." && lastItem == ".")) {
               this.exp.push(currentItem);
             }
           }
         }
         // if last items are operator
-        else if (/[\+\-\/\×]/gi.test(lastItem)) {
+        else if (mathOperators.includes(lastItem)) {
           if (currentItem == "1/") {
             this.exp.push("(");
             this.exp.push("1");
             this.exp.push("/");
-          } else if (/[\+\-\/\×]/gi.test(currentItem)) {
+          }
+          else if (mathOperators.includes(lastItem)) {
             this.remove();
             this.exp.push(currentItem);
-          } else if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
+          }
+          else if ([...numbers, ...trigonomatory, "π", "e", "√", "("].includes(currentItem)) {
             this.exp.push(currentItem);
           }
         }
 
         // if last items is (
-        else if (/\(/.test(lastItem)) {
-          if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(\+\-]/gi.test(currentItem)) {
+        else if (lastItem == "(") {
+          if ([...numbers, "1/x", ...trigonomatory, "π", "e", "√", "(", "+", "-"].includes(currentItem)) {
             if (currentItem == "1/") {
               this.exp.push("1");
               this.exp.push("/");
-            } else {
+            }
+            else {
               this.exp.push(currentItem);
             }
           }
         }
         // if last items are pi, exponent and )
-        else if (/[\π\e\)]/.test(lastItem)) {
-          if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
+        else if (["π", "e", ")"].includes(lastItem)) {
+          if ([...numbers, "1/", ...trigonomatory, "π", "e", "√", "("].includes(currentItem)) {
             this.exp.push("×");
             if (currentItem == "1/") {
               this.exp.push("(");
@@ -104,61 +119,69 @@ const calc = {
             } else {
               this.exp.push(currentItem);
             }
-          } else if (/[\)\/\×\+\-\^\%]/gi.test(currentItem)) {
+          }
+          else if ([(")", "/", "×", "+", "-", "^", "%")].includes(currentItem)) {
             this.exp.push(currentItem);
           }
         }
         // if last item is sqrt
-        else if (/[\√\^]/gi.test(lastItem)) {
-          if (/[0-9\sin(\cos(\tan(\log(\π\√\e\+\-]/gi.test(currentItem)) {
+        else if (["^", "√"].includes(lastItem)) {
+          if ([...numbers, "1/", ...trigonomatory, "π", "e", "√", "+", "-"].includes(currentItem)) {
             this.exp.push("(");
             if (currentItem == "1/") {
               this.exp.push("1");
               this.exp.push("/");
-            } else {
+            }
+            else {
               this.exp.push(currentItem);
             }
-          } else if (/[\(]/gi.test(currentItem)) {
+          }
+          else if (currentItem == "(") {
             this.exp.push("(");
           }
         }
         // /[\%]/gi;
         // /[0-9\1/\sin(\cos(\tan(\log(\π\√\e\(\)\/\×\+\-\^\%\.]/gi
-        else if (/[\%]/gi.test(lastItem)) {
-          if (/[0-9\sin(\cos(\tan(\log(\π\√\e\(]/gi.test(currentItem)) {
+        else if (lastItem == "%") {
+          if ([...numbers, "1/", ...trigonomatory, "π", "e", "√", "(",].includes(currentItem)) {
             this.exp.push("×");
             if (currentItem == "1/") {
               this.exp.push("(");
               this.exp.push("1");
               this.exp.push("/");
-            } else {
+            }
+            else {
               this.exp.push(currentItem);
             }
-          } else if (/[\)\/\×\+\-]/gi.test(currentItem)) {
+          } else if ([")", "/", "+", "-", "×"].includes(currentItem)) {
             this.exp.push(currentItem);
           }
         }
         // end of the else block
       }
     }
-
-    // after adding the item render expression
-    this.renderCalc(renderingNode);
   },
 };
 
 btns.forEach((btn) => {
   btn.addEventListener("click", function (e) {
-    const targetbtn = e.target.dataset.value;
-    calc.add(targetbtn, expressionScreen);
+    const targetBtnValue = e.target.dataset.value;
+    calc.add(targetBtnValue);
+    renderExpression();
   });
 });
 
 deleteBtn.addEventListener("click", function () {
   calc.remove(expressionScreen);
+  renderExpression();
 });
 
 allclearbtn.addEventListener("click", function () {
   calc.exp = [];
-  calc.renderCalc(expressionScreen);
+  renderExpression();
 });
+
+// application specific function
+function renderExpression() {
+  expressionScreen.innerText = calc.exp.join("");
+}
