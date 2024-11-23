@@ -29,138 +29,115 @@ const calc = {
     this.exp.pop();
   },
 
-  add(currentItem) {
+  add(currentInput) {
+
+    // valid inputs category wise
     const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    const trigonomatory = ["sin(", "cos(", "tan(", "log("];
+    const trigonomatory = ["sin(", "cos(", "tan(", "log(", "1/(", "√(", "("];
     const mathOperators = ["/", "+", "-", "×"];
-    const restSymbols = ["1/", "π", "e", "√", "(", ")", "^", "%", "."];
+    const restSymbols = ["π", "e", ")", "^", "%", "."];
     const validSymbols = [...numbers, ...trigonomatory, ...mathOperators, ...restSymbols,];
 
-    // if currentItem is allowed valid calculator symbol
-    if (validSymbols.includes(currentItem)) {
 
-
-      // if expression has nothing in it
-      if (this.length <= 0) {
-
-        if ([...numbers, ...trigonomatory, "1/", "π", "e", "√", "("].includes(currentItem)) {
-          if (currentItem == "1/") {
-            this.exp.push("1");
-            this.exp.push("/");
-          } else {
-            this.exp.push(currentItem);
-          }
-        }
-      }
-
-
-
-
-      // if expression has more than 1 item
-      else {
-
-        // getting last item
-        const { lastItem } = this;
-
-        // if lastItem is a number or dot
-        if ([...numbers
-          , "."].includes(lastItem)) {
-          if (currentItem == "1/") {
-            this.exp.push("×");
-            this.exp.push("1");
-            this.exp.push("/");
-          }
-          else if ([...trigonomatory, "π", "e", "√", "("].includes(currentItem)) {
-            this.exp.push("×");
-            this.exp.push(currentItem);
-          }
-          else if ([...numbers, "1/", ".", ...mathOperators, "%", "^"].includes(lastItem)) {
-            if (!(currentItem == "." && lastItem == ".")) {
-              this.exp.push(currentItem);
-            }
-          }
-        }
-        // if last items are operator
-        else if (mathOperators.includes(lastItem)) {
-          if (currentItem == "1/") {
-            this.exp.push("(");
-            this.exp.push("1");
-            this.exp.push("/");
-          }
-          else if (mathOperators.includes(lastItem)) {
-            this.remove();
-            this.exp.push(currentItem);
-          }
-          else if ([...numbers, ...trigonomatory, "π", "e", "√", "("].includes(currentItem)) {
-            this.exp.push(currentItem);
-          }
-        }
-
-        // if last items is (
-        else if (lastItem == "(") {
-          if ([...numbers, "1/x", ...trigonomatory, "π", "e", "√", "(", "+", "-"].includes(currentItem)) {
-            if (currentItem == "1/") {
-              this.exp.push("1");
-              this.exp.push("/");
-            }
-            else {
-              this.exp.push(currentItem);
-            }
-          }
-        }
-        // if last items are pi, exponent and )
-        else if (["π", "e", ")"].includes(lastItem)) {
-          if ([...numbers, "1/", ...trigonomatory, "π", "e", "√", "("].includes(currentItem)) {
-            this.exp.push("×");
-            if (currentItem == "1/") {
-              this.exp.push("(");
-              this.exp.push("1");
-              this.exp.push("/");
-            } else {
-              this.exp.push(currentItem);
-            }
-          }
-          else if ([(")", "/", "×", "+", "-", "^", "%")].includes(currentItem)) {
-            this.exp.push(currentItem);
-          }
-        }
-        // if last item is sqrt
-        else if (["^", "√"].includes(lastItem)) {
-          if ([...numbers, "1/", ...trigonomatory, "π", "e", "√", "+", "-"].includes(currentItem)) {
-            this.exp.push("(");
-            if (currentItem == "1/") {
-              this.exp.push("1");
-              this.exp.push("/");
-            }
-            else {
-              this.exp.push(currentItem);
-            }
-          }
-          else if (currentItem == "(") {
-            this.exp.push("(");
-          }
-        }
-        // /[\%]/gi;
-        // /[0-9\1/\sin(\cos(\tan(\log(\π\√\e\(\)\/\×\+\-\^\%\.]/gi
-        else if (lastItem == "%") {
-          if ([...numbers, "1/", ...trigonomatory, "π", "e", "√", "(",].includes(currentItem)) {
-            this.exp.push("×");
-            if (currentItem == "1/") {
-              this.exp.push("(");
-              this.exp.push("1");
-              this.exp.push("/");
-            }
-            else {
-              this.exp.push(currentItem);
-            }
-          } else if ([")", "/", "+", "-", "×"].includes(currentItem)) {
-            this.exp.push(currentItem);
-          }
-        }
-        // end of the else block
-      }
+    const numberValidation = {
+      allowedAfterThis: [...numbers, ...mathOperators, "^", "%", "."],
+      validWithPrefix: [...trigonomatory, "π", "e"],
+      prefix: "×",
     }
-  },
+
+    const scientificFunctionValidation = {
+      allowedAfterThis: [...numbers, ...trigonomatory, "+", "-", "π", "e"],
+      validWithPrefix: null,
+      prefix: null,
+    };
+
+    const operatorValidation = {
+      allowedAfterThis: [...numbers, ...trigonomatory, "π", "e"],
+      validWithPrefix: null,
+      prefix: null,
+    }
+
+    const PIandEValidation = {
+      allowedAfterThis: [...mathOperators, "%", "^", ")"],
+      validWithPrefix: [...numbers, ...trigonomatory, "π", "e"],
+      prefix: "×",
+    }
+
+    // single object to track down all the validation
+    const validation = {
+      "0": numberValidation,
+      "1": numberValidation,
+      "2": numberValidation,
+      "3": numberValidation,
+      "4": numberValidation,
+      "5": numberValidation,
+      "6": numberValidation,
+      "7": numberValidation,
+      "8": numberValidation,
+      "9": numberValidation,
+      "sin(": scientificFunctionValidation,
+      "cos(": scientificFunctionValidation,
+      "tan(": scientificFunctionValidation,
+      "log(": scientificFunctionValidation,
+      "1/(": scientificFunctionValidation,
+      "(": scientificFunctionValidation,
+      "√(": scientificFunctionValidation,
+      "+": operatorValidation,
+      "-": operatorValidation,
+      "/": operatorValidation,
+      "×": operatorValidation,
+      "π": PIandEValidation,
+      "e": PIandEValidation,
+      "^": {
+        allowedAfterThis: [...numbers, "(", "π", "e", "1/"],
+        validWithPrefix: null,
+        prefix: null,
+      },
+      "%": {
+        allowedAfterThis: [...mathOperators, "^"],
+        validWithPrefix: [...numbers, ...trigonomatory, "π", "e", "("],
+        prefix: "×",
+      },
+      ".": {
+        allowedAfterThis: [...numbers, ...mathOperators, "%", "^"],
+        validWithPrefix: [...trigonomatory, "π", "e"],
+        prefix: "×",
+      },
+      ")": {
+        allowedAfterThis: [...mathOperators, "%", "^"],
+        validWithPrefix: [...numbers, ...trigonomatory, "π", "e"],
+        prefix: "×",
+      },
+    }
+
+    // if current input is valid then processed further
+    const { lastItem, length } = this;
+
+    if (validSymbols.includes(currentInput)) {
+
+      if (!length) {
+        if ([...numbers, ...trigonomatory, "+", "-", "π", "e"].includes(currentInput)) {
+          this.exp.push(currentInput);
+        }
+      }
+      else {
+        const { allowedAfterThis, validWithPrefix, prefix } = validation[lastItem];
+
+        if (allowedAfterThis.includes(currentInput)) {
+          this.exp.push(currentInput)
+        }
+        else if (validWithPrefix && prefix) {
+          if (validWithPrefix.includes(currentInput)) {
+            this.exp.push(prefix)
+            this.exp.push(currentInput)
+          }
+        }
+      }
+
+    }
+
+
+  }
 };
 
 btns.forEach((btn) => {

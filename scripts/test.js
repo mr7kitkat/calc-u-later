@@ -23,8 +23,8 @@ const operatorValidation = {
     prefix: null,
 }
 
-const piande = {
-    allowedAfterThis: [...mathOperators, "%", "^"],
+const PIandEValidation = {
+    allowedAfterThis: [...mathOperators, "%", "^", ")"],
     validWithPrefix: [...numbers, ...trigonomatory, "π", "e"],
     prefix: "×",
 }
@@ -52,8 +52,8 @@ const validation = {
     "-": operatorValidation,
     "/": operatorValidation,
     "×": operatorValidation,
-    "π": piande,
-    "e": piande,
+    "π": PIandEValidation,
+    "e": PIandEValidation,
     "^": {
         allowedAfterThis: [...numbers, "(", "π", "e", "1/"],
         validWithPrefix: null,
@@ -74,4 +74,53 @@ const validation = {
         validWithPrefix: [...numbers, ...trigonomatory, "π", "e"],
         prefix: "×",
     },
+}
+
+
+
+
+const expression = []
+
+function theValidatorFunction(lastInput, currentInput, expression) {
+    const { allowedAfterThis, validWithPrefix, prefix } = validation[lastInput]
+
+
+    if (allowedAfterThis.includes(currentInput)) {
+        expression.push(currentInput)
+    }
+    else if (validWithPrefix) {
+
+        if (validWithPrefix.includes(currentInput) && prefix) {
+            expression.push(prefix)
+            expression.push(currentInput)
+        }
+    }
+    else {
+        return false
+    }
+
+}
+
+while (true) {
+    const userInput = prompt("Input: ")
+
+    if (userInput == "~") {
+        break
+    }
+
+    if (!expression.length) {
+        if ([...numbers, ...trigonomatory, "+", "-", "π", "e"].includes(userInput)) {
+            expression.push(userInput)
+        }
+    }
+    else {
+        const lastInput = expression.slice(-1)[0];
+
+        theValidatorFunction(lastInput, userInput, expression);
+    }
+
+    console.log(`After ${userInput} expression is :`);
+    console.log(expression)
+
+
 }
