@@ -5,12 +5,15 @@ const resultScreen = document.querySelector(".result");
 const btns = document.querySelectorAll(".getvalue");
 const deleteBtn = document.querySelector("#clearbtn");
 const allclearbtn = document.querySelector("#allclearbtn");
-const openingBracket = document.querySelector("#openingBracket");
-const closingBracket = document.querySelector("#closingBracket");
+const equalbtn = document.querySelector("#equalbtn");
+
 
 // the calculator Object
 const calc = {
   exp: [],
+
+  // a simplet counter for bracket on and off
+  bracketCounter: 0,
 
   // Get the last item of the exp array
   get lastItem() {
@@ -26,9 +29,18 @@ const calc = {
 
   // remove items from the array
   remove() {
-    this.exp.pop();
+    const item = this.exp.pop();
+
+    if (item.includes("(")) {
+      this.bracketCounter--;
+    }
+    else if (item.includes(")")) {
+      this.bracketCounter++
+    }
+
   },
 
+  // add the current item
   add(currentInput) {
 
     // valid inputs category wise
@@ -38,9 +50,10 @@ const calc = {
     const restSymbols = ["π", "e", ")", "^", "%", "."];
     const validSymbols = [...numbers, ...trigonomatory, ...mathOperators, ...restSymbols,];
 
-
+    // to reduce complexity of validation object
+    // it is a kind of object cache
     const numberValidation = {
-      allowedAfterThis: [...numbers, ...mathOperators, "^", "%", "."],
+      allowedAfterThis: [...numbers, ...mathOperators, "^", "%", ".", ")"],
       validWithPrefix: [...trigonomatory, "π", "e"],
       prefix: "×",
     }
@@ -104,27 +117,46 @@ const calc = {
         prefix: "×",
       },
       ")": {
-        allowedAfterThis: [...mathOperators, "%", "^"],
+        allowedAfterThis: [...mathOperators, "%", "^", ")"],
         validWithPrefix: [...numbers, ...trigonomatory, "π", "e"],
         prefix: "×",
       },
     }
 
-    // if current input is valid then processed further
+    // current length and lastItem
     const { lastItem, length } = this;
 
+    // if current input is valid then processed further
     if (validSymbols.includes(currentInput)) {
 
+      // if there is nothing in expression then check for valid input and add it.
       if (!length) {
         if ([...numbers, ...trigonomatory, "+", "-", "π", "e"].includes(currentInput)) {
           this.exp.push(currentInput);
         }
       }
+
+      // if there is something then based on last item lets add the currentInput
       else {
         const { allowedAfterThis, validWithPrefix, prefix } = validation[lastItem];
 
+        // if last item and current item both are + - x / then change remove last item and update it with current
+        if (mathOperators.includes(currentInput) && mathOperators.includes(lastItem)) {
+          this.remove();
+          this.exp.push(currentInput);
+          return
+        }
+
         if (allowedAfterThis.includes(currentInput)) {
-          this.exp.push(currentInput)
+          // if 
+          if (currentInput.includes(")") && this.bracketCounter > 0) {
+            this.bracketCounter--;
+            this.exp.push(currentInput)
+
+          }
+          else if (!currentInput.includes(")")) {
+            this.exp.push(currentInput);
+          }
         }
         else if (validWithPrefix && prefix) {
           if (validWithPrefix.includes(currentInput)) {
@@ -133,12 +165,17 @@ const calc = {
           }
         }
       }
-
     }
 
+    // check if last item has '(', if it has then update the bracketCounter
+    if (this.length && this.lastItem.includes("(")) {
+      this.bracketCounter++;
+    }
+  },
 
-  }
 };
+
+
 
 btns.forEach((btn) => {
   btn.addEventListener("click", function (e) {
@@ -155,10 +192,17 @@ deleteBtn.addEventListener("click", function () {
 
 allclearbtn.addEventListener("click", function () {
   calc.exp = [];
+  calc.bracketCounter = 0
   renderExpression();
 });
+
+equalbtn.addEventListener("click", () => {
+  alert(calc.solve)
+})
 
 // application specific function
 function renderExpression() {
   expressionScreen.innerText = calc.exp.join("");
 }
+
+
