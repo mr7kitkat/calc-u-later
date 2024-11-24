@@ -43,105 +43,28 @@ const calc = {
   // add the current item
   add(currentInput) {
 
-    // valid inputs category wise
-    const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    const trigonomatory = ["sin(", "cos(", "tan(", "log(", "1/(", "√(", "("];
-    const mathOperators = ["/", "+", "-", "×"];
-    const restSymbols = ["π", "e", ")", "^", "%", "."];
-    const validSymbols = [...numbers, ...trigonomatory, ...mathOperators, ...restSymbols,];
 
-    // to reduce complexity of validation object
-    // it is a kind of object cache
-    const numberValidation = {
-      allowedAfterThis: [...numbers, ...mathOperators, "^", "%", ".", ")"],
-      validWithPrefix: [...trigonomatory, "π", "e"],
-      prefix: "×",
-    }
-
-    const scientificFunctionValidation = {
-      allowedAfterThis: [...numbers, ...trigonomatory, "+", "-", "π", "e"],
-      validWithPrefix: null,
-      prefix: null,
-    };
-
-    const operatorValidation = {
-      allowedAfterThis: [...numbers, ...trigonomatory, "π", "e"],
-      validWithPrefix: null,
-      prefix: null,
-    }
-
-    const PIandEValidation = {
-      allowedAfterThis: [...mathOperators, "%", "^", ")"],
-      validWithPrefix: [...numbers, ...trigonomatory, "π", "e"],
-      prefix: "×",
-    }
-
-    // single object to track down all the validation
-    const validation = {
-      "0": numberValidation,
-      "1": numberValidation,
-      "2": numberValidation,
-      "3": numberValidation,
-      "4": numberValidation,
-      "5": numberValidation,
-      "6": numberValidation,
-      "7": numberValidation,
-      "8": numberValidation,
-      "9": numberValidation,
-      "sin(": scientificFunctionValidation,
-      "cos(": scientificFunctionValidation,
-      "tan(": scientificFunctionValidation,
-      "log(": scientificFunctionValidation,
-      "1/(": scientificFunctionValidation,
-      "(": scientificFunctionValidation,
-      "√(": scientificFunctionValidation,
-      "+": operatorValidation,
-      "-": operatorValidation,
-      "/": operatorValidation,
-      "×": operatorValidation,
-      "π": PIandEValidation,
-      "e": PIandEValidation,
-      "^": {
-        allowedAfterThis: [...numbers, "(", "π", "e", "1/"],
-        validWithPrefix: null,
-        prefix: null,
-      },
-      "%": {
-        allowedAfterThis: [...mathOperators, "^"],
-        validWithPrefix: [...numbers, ...trigonomatory, "π", "e", "("],
-        prefix: "×",
-      },
-      ".": {
-        allowedAfterThis: [...numbers, ...mathOperators, "%", "^"],
-        validWithPrefix: [...trigonomatory, "π", "e"],
-        prefix: "×",
-      },
-      ")": {
-        allowedAfterThis: [...mathOperators, "%", "^", ")"],
-        validWithPrefix: [...numbers, ...trigonomatory, "π", "e"],
-        prefix: "×",
-      },
-    }
+    const { allValidInputs, numberSymbols, scientificSymbols, operatorSymbols, keyValidation } = validationChecks();
 
     // current length and lastItem
     const { lastItem, length } = this;
 
     // if current input is valid then processed further
-    if (validSymbols.includes(currentInput)) {
+    if (allValidInputs.includes(currentInput)) {
 
       // if there is nothing in expression then check for valid input and add it.
       if (!length) {
-        if ([...numbers, ...trigonomatory, "+", "-", "π", "e"].includes(currentInput)) {
+        if ([...numberSymbols, ...scientificSymbols, "+", "-", "π", "e"].includes(currentInput)) {
           this.exp.push(currentInput);
         }
       }
 
       // if there is something then based on last item lets add the currentInput
       else {
-        const { allowedAfterThis, validWithPrefix, prefix } = validation[lastItem];
+        const { allowedAfterThis, validWithPrefix, prefix } = keyValidation[lastItem];
 
         // if last item and current item both are + - x / then change remove last item and update it with current
-        if (mathOperators.includes(currentInput) && mathOperators.includes(lastItem)) {
+        if (operatorSymbols.includes(currentInput) && operatorSymbols.includes(lastItem)) {
           this.remove();
           this.exp.push(currentInput);
           return
@@ -173,6 +96,33 @@ const calc = {
     }
   },
 
+
+  get stringExpression() {
+    return this.exp.join("")
+  },
+
+  get solve() {
+    const { exp } = this;
+
+    const replacement = {
+      "sin(": "Math.sin(",
+      "cos(": "Math.cos(",
+      "tan(": "Math.tan(",
+      "log(": "Math.log(",
+      "√(": "Math.sqrt(",
+      "×": "*",
+      "π": 3.14,
+      "e": 2.72
+    }
+
+    exp.forEach((key, index) => {
+      if (key in replacement) {
+        exp[index] = replacement[key]
+      }
+    });
+
+    return eval(exp.join(""))
+  }
 };
 
 
@@ -197,12 +147,108 @@ allclearbtn.addEventListener("click", function () {
 });
 
 equalbtn.addEventListener("click", () => {
-  alert(calc.solve)
+  resultScreen.innerText = calc.solve;
 })
 
 // application specific function
 function renderExpression() {
-  expressionScreen.innerText = calc.exp.join("");
+  expressionScreen.innerText = calc.stringExpression;
 }
+
+
+
+// all the validation for calculator mentioned here
+function validationChecks() {
+  // valid inputs category wise
+  const numberSymbols = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  const scientificSymbols = ["sin(", "cos(", "tan(", "log(", "1/(", "√(", "("];
+  const operatorSymbols = ["/", "+", "-", "×"];
+  const restSymbols = ["π", "e", ")", "^", "%", "."];
+  const allValidInputs = [...numberSymbols, ...scientificSymbols, ...operatorSymbols, ...restSymbols,];
+
+  // to reduce complexity of keyValidation object
+  // it is a kind of object cache
+  const testNumbers = {
+    allowedAfterThis: [...numberSymbols, ...operatorSymbols, "^", "%", ".", ")"],
+    validWithPrefix: [...scientificSymbols, "π", "e"],
+    prefix: "×",
+  }
+
+  const testScientificFunc = {
+    allowedAfterThis: [...numberSymbols, ...scientificSymbols, "+", "-", "π", "e"],
+    validWithPrefix: null,
+    prefix: null,
+  };
+
+  const testOperators = {
+    allowedAfterThis: [...numberSymbols, ...scientificSymbols, "π", "e"],
+    validWithPrefix: null,
+    prefix: null,
+  }
+
+  const testPiAndE = {
+    allowedAfterThis: [...operatorSymbols, "%", "^", ")"],
+    validWithPrefix: [...numberSymbols, ...scientificSymbols, "π", "e"],
+    prefix: "×",
+  }
+
+  // single object to track down all the keyValidation
+  const keyValidation = {
+    "0": testNumbers,
+    "1": testNumbers,
+    "2": testNumbers,
+    "3": testNumbers,
+    "4": testNumbers,
+    "5": testNumbers,
+    "6": testNumbers,
+    "7": testNumbers,
+    "8": testNumbers,
+    "9": testNumbers,
+    "sin(": testScientificFunc,
+    "cos(": testScientificFunc,
+    "tan(": testScientificFunc,
+    "log(": testScientificFunc,
+    "1/(": testScientificFunc,
+    "(": testScientificFunc,
+    "√(": testScientificFunc,
+    "+": testOperators,
+    "-": testOperators,
+    "/": testOperators,
+    "×": testOperators,
+    "π": testPiAndE,
+    "e": testPiAndE,
+    "^": {
+      allowedAfterThis: [...numberSymbols, "(", "π", "e", "1/"],
+      validWithPrefix: null,
+      prefix: null,
+    },
+    "%": {
+      allowedAfterThis: [...operatorSymbols, "^"],
+      validWithPrefix: [...numberSymbols, ...scientificSymbols, "π", "e", "("],
+      prefix: "×",
+    },
+    ".": {
+      allowedAfterThis: [...numberSymbols, ...operatorSymbols, "%", "^"],
+      validWithPrefix: [...scientificSymbols, "π", "e"],
+      prefix: "×",
+    },
+    ")": {
+      allowedAfterThis: [...operatorSymbols, "%", "^", ")"],
+      validWithPrefix: [...numberSymbols, ...scientificSymbols, "π", "e"],
+      prefix: "×",
+    },
+  }
+
+  return {
+    keyValidation,
+    numberSymbols,
+    operatorSymbols,
+    scientificSymbols,
+    allValidInputs
+  }
+
+}
+
+
 
 

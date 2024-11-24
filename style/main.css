@@ -175,6 +175,14 @@ button img {
   background-color: var(--color-tomato-red-component-t2);
 }
 
+#powerTo::after {
+  content: "n";
+  display: inline-block;
+  position: relative;
+  top: -20px;
+  font-size: 14px;
+}
+
 @media screen and (max-width: 650px) {
   .main-app-background {
     padding-right: 16px;
