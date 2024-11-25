@@ -3,8 +3,7 @@
 * {
   padding: 0;
   margin: 0;
-  --color-black-body-bg-t1: #181818;
-  --color-golden-section-bg-font-t1: #c9a03e;
+  --color-golden-section-bg-font-t1: #ffbe26;
   --color-gray-lv1-font-t1: #929292;
   --color-black-bg-t2: #000000;
   --color-white-font-t2: #fcfcfc;
@@ -24,7 +23,7 @@ body {
 }
 
 body {
-  background: var(--color-black-body-bg-t1);
+  background: var(--color-golden-section-bg-font-t1);
   height: 100vh;
   width: 100vw;
   padding: var(--default-px * 2);
@@ -50,6 +49,7 @@ body {
   grid-template-rows: 50px auto 5fr;
   padding-right: 32px;
   padding-bottom: 32px;
+  transition: 0.5s all ease;
 }
 
 /* App title bar section */
@@ -203,6 +203,7 @@ button img {
     padding-bottom: 16px;
     max-width: 100vw;
     max-height: 100vh;
+    border-radius: 0px;
   }
 
   button {
