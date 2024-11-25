@@ -1,6 +1,0 @@
-if I would be a computer 
-
-
-* I see the expression array length if it is zero then 1st valid input would be either 0-9, - or  (, sin, cos, tan, log, pi, sqrt, e
-
-* If expression length is 1 and previous value 
