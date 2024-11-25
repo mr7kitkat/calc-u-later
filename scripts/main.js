@@ -8,6 +8,7 @@ const allclearbtn = document.querySelector("#allclearbtn");
 const equalbtn = document.querySelector("#equalbtn");
 
 
+
 // the calculator Object
 const calc = {
   exp: [],
@@ -51,7 +52,6 @@ const calc = {
 
     // if current input is valid then processed further
     if (allValidInputs.includes(currentInput)) {
-
       // if there is nothing in expression then check for valid input and add it.
       if (!length) {
         if ([...numberSymbols, ...scientificSymbols, "+", "-", "π", "e"].includes(currentInput)) {
@@ -62,7 +62,6 @@ const calc = {
       // if there is something then based on last item lets add the currentInput
       else {
         const { allowedAfterThis, validWithPrefix, prefix } = keyValidation[lastItem];
-
         // if last item and current item both are + - x / then change remove last item and update it with current
         if (operatorSymbols.includes(currentInput) && operatorSymbols.includes(lastItem)) {
           this.remove();
@@ -98,35 +97,55 @@ const calc = {
 
 
   get stringExpression() {
-    return this.exp.join("")
+    if (this.length) {
+      return this.exp.join("")
+    }
+    return ""
   },
 
   get solve() {
-    const { exp } = this;
+    if (this.length) {
+      const expression = Array.from(this.exp);
 
-    const replacement = {
-      "sin(": "Math.sin(",
-      "cos(": "Math.cos(",
-      "tan(": "Math.tan(",
-      "log(": "Math.log(",
-      "√(": "Math.sqrt(",
-      "×": "*",
-      "π": 3.14,
-      "e": 2.72
+      const replacement = {
+        "sin(": "Math.sin(",
+        "cos(": "Math.cos(",
+        "tan(": "Math.tan(",
+        "log(": "Math.log(",
+        "√(": "Math.sqrt(",
+        "×": "*",
+        "π": 3.14,
+        "e": 2.72,
+        "^": "**"
+      }
+
+      expression.forEach((key, index) => {
+        if (key in replacement) {
+          expression[index] = replacement[key]
+        }
+      });
+      try {
+        const result = eval(expression.join(""))
+        if (isFinite(result)) {
+          return result
+        }
+        else {
+          return "<span style='color:tomato;'>Mathematical Error!</span>"
+        }
+      }
+      catch {
+        return "<span style='color:tomato;'>Invalid Inputs!</span>"
+      }
+    }
+    else {
+      return ""
     }
 
-    exp.forEach((key, index) => {
-      if (key in replacement) {
-        exp[index] = replacement[key]
-      }
-    });
-
-    return eval(exp.join(""))
   }
 };
 
 
-
+// DOM Manupluation part for the app
 btns.forEach((btn) => {
   btn.addEventListener("click", function (e) {
     const targetBtnValue = e.target.dataset.value;
@@ -143,13 +162,19 @@ deleteBtn.addEventListener("click", function () {
 allclearbtn.addEventListener("click", function () {
   calc.exp = [];
   calc.bracketCounter = 0
+  resultScreen.innerHTML = ""
   renderExpression();
 });
 
 equalbtn.addEventListener("click", () => {
-  resultScreen.innerText = calc.solve;
+  resultScreen.innerHTML = calc.solve;
 })
 
+
+
+
+
+// Helper function
 // application specific function
 function renderExpression() {
   expressionScreen.innerText = calc.stringExpression;

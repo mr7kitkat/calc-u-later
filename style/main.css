@@ -3,7 +3,6 @@
 * {
   padding: 0;
   margin: 0;
-  box-sizing: border-box;
   --color-black-body-bg-t1: #181818;
   --color-golden-section-bg-font-t1: #c9a03e;
   --color-gray-lv1-font-t1: #929292;
@@ -17,6 +16,11 @@
   --font-2: "Sora", sans-serif;
 
   user-select: none;
+}
+
+html,
+body {
+  box-sizing: border-box;
 }
 
 body {
@@ -51,9 +55,15 @@ body {
 /* App title bar section */
 .app-title {
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
   padding: var(--default-px);
+}
+
+.menubar {
+  display: flex;
+  justify-content: start;
+  align-items: center;
 }
 
 .circles {
@@ -96,12 +106,12 @@ body {
 
 .result {
   color: var(--color-white-font-t2);
-  font-size: 80px;
+  font-size: 48px;
   height: 84px;
   font-weight: 900;
   text-align: right;
-  line-height: 1;
-  margin-bottom: 8px;
+  line-height: 1.2;
+  margin: 8px auto;
   overflow: hidden;
 }
 
@@ -184,6 +194,10 @@ button img {
 }
 
 @media screen and (max-width: 650px) {
+  .mode {
+    display: none;
+  }
+
   .main-app-background {
     padding-right: 16px;
     padding-bottom: 16px;
@@ -200,9 +214,59 @@ button img {
   #dot {
     font-size: 38px;
   }
+  .expression {
+    font-size: 36px;
+  }
+
+  .result {
+    font-size: 40px;
+  }
 }
 
 @media screen and (max-width: 500px) {
+  .input {
+    margin-top: var(--default-px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .main-app-background {
+    padding-right: 8px;
+    padding-bottom: 8px;
+  }
+
+  button {
+    font-size: 18px;
+    border-radius: 4px;
+  }
+
+  .number,
+  #dot {
+    font-size: 30px;
+  }
+
+  .scientific-group,
+  .scientific {
+    display: none;
+  }
+
+  .scientific-group,
+  .non-scientific-group {
+    gap: 4px;
+  }
+
+  .expression {
+    font-size: 28px;
+  }
+
+  .result {
+    font-size: 36px;
+  }
+}
+
+/* on portrait screen */
+@media screen and (orientation: portrait) {
   .input {
     margin-top: var(--default-px);
     display: grid;
